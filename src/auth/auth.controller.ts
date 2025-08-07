@@ -1,4 +1,5 @@
 import { AuthGuard, Public } from './auth.guard';
+import { SignInDto } from './auth.validation';
 import { AuthService } from './auth.service';
 import {
   Body,
@@ -16,7 +17,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Public()
   @Post('sign-in')
-  signIn(@Body() signInDto: Record<string, string>) {
+  signIn(@Body() signInDto: SignInDto) {
     return this.authService.signIn(signInDto.email, signInDto.password);
   }
 
