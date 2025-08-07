@@ -4,6 +4,8 @@ import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from '@database/database.module';
 import { AppService } from '@source/app.service';
 import { validate as validateEnv } from '@config/env.validation';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -12,6 +14,8 @@ import { validate as validateEnv } from '@config/env.validation';
       validate: validateEnv,
     }),
     DatabaseModule.forRoot(),
+    AuthModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
