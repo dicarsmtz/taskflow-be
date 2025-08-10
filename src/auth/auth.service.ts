@@ -30,7 +30,6 @@ export class AuthService {
       password: await bcrypt.hash(data.password, 10),
     };
 
-    const newUser = await User.query().insert(hashedData);
-    return newUser;
+    return await User.query().insert(hashedData);
   }
 }
