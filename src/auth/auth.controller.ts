@@ -1,5 +1,5 @@
 import { AuthGuard, Public } from './auth.guard';
-import { SignInDto } from './auth.validation';
+import { SignInDto, SignUpDto } from './auth.validation';
 import { AuthService } from './auth.service';
 import {
   Body,
@@ -14,6 +14,12 @@ import {
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Public()
+  @Post('sign-up')
+  signUp(@Body() signUpDto: SignUpDto) {
+    return this.authService.signUp(signUpDto);
+  }
+
   @HttpCode(HttpStatus.OK)
   @Public()
   @Post('sign-in')
@@ -21,6 +27,7 @@ export class AuthController {
     return this.authService.signIn(signInDto.email, signInDto.password);
   }
 
+  @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard)
   @Post('sign-out')
   signOut() {

@@ -1,11 +1,17 @@
-import { Model } from 'objection';
+import { Model, snakeCaseMappers } from 'objection';
 
 // avoids type checks and complex conversions
-type OmitFields = { [key: string]: boolean };
-type Omits = {
-  json: OmitFields;
-  database: OmitFields;
-};
+interface OmitFields {
+  [key: string]: boolean;
+}
+export interface Omits {
+  json?: OmitFields;
+  database?: OmitFields;
+}
+
+// Can't create model properties as objection.js tries to treat them as db columns
+const _jsonOmitted = Symbol('_jsonOmitted');
+const _databaseJsonOmitted = Symbol('_databaseJsonOmitted');
 
 class BaseModel extends Model {
   id!: number;
@@ -16,11 +22,23 @@ class BaseModel extends Model {
     return 'id';
   }
 
+  get jsonOmitted(): boolean {
+    return Boolean(this[_jsonOmitted]);
+  }
+
+  get databaseJsonOmitted(): boolean {
+    return Boolean(this[_databaseJsonOmitted]);
+  }
+
   get modelOmits(): Omits {
     return {
       json: {},
       database: {},
     };
+  }
+
+  static get columnNameMappers() {
+    return snakeCaseMappers();
   }
 
   private get omits(): Omits {
@@ -41,14 +59,18 @@ class BaseModel extends Model {
     return finalOmits;
   }
 
-  $omitFromJson(keys: OmitFields): this {
+  omitFromJson(keys: OmitFields = {}): this {
     const finalOmits = { ...this.omits.json, ...keys };
-    return super.$omitFromJson(finalOmits);
+    const result = this.$omitFromJson(finalOmits);
+    this[_jsonOmitted] = true;
+    return result;
   }
 
-  $omitFromDatabaseJson(keys: OmitFields): this {
-    const finalOmits = { ...this.omits.json, ...keys };
-    return super.$omitFromDatabaseJson(finalOmits);
+  omitFromDatabaseJson(keys: OmitFields = {}): this {
+    const finalOmits = { ...this.omits.database, ...keys };
+    const result = this.$omitFromDatabaseJson(finalOmits);
+    this[_databaseJsonOmitted] = true;
+    return result;
   }
 
   // override to force UTC

@@ -1,6 +1,8 @@
+import { SignUpDto } from './auth.validation';
 import User from '@database/models/user.model';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -20,5 +22,15 @@ export class AuthService {
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
+  }
+
+  async signUp(data: SignUpDto) {
+    const hashedData = {
+      ...data,
+      password: await bcrypt.hash(data.password, 10),
+    };
+
+    const newUser = await User.query().insert(hashedData);
+    return newUser;
   }
 }
