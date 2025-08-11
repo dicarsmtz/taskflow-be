@@ -11,6 +11,7 @@ import { UsersModule } from './users/users.module';
   imports: [
     ConfigModule.forRoot({
       cache: true,
+      isGlobal: true,
       validate: validateEnv,
     }),
     DatabaseModule.forRoot(),

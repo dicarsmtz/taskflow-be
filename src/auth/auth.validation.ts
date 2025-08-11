@@ -28,3 +28,14 @@ export class SignUpDto {
   email!: string;
   password!: string;
 }
+
+export const RefreshSchema = z.object({
+  email: z.email(),
+  refresh_token: z.string(),
+});
+
+export class RefreshDto {
+  email!: string;
+  @Expose({ name: 'refresh_token' })
+  refreshToken!: string;
+}

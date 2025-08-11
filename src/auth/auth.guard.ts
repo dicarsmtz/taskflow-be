@@ -7,8 +7,8 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
-import { jwtConstants } from './constants';
 import { Reflector } from '@nestjs/core';
+import { ConfigService } from '@nestjs/config';
 
 export const IS_PUBLIC_RESOURCE = 'isPublic';
 export const Public = () => SetMetadata(IS_PUBLIC_RESOURCE, true);
@@ -17,6 +17,7 @@ export const Public = () => SetMetadata(IS_PUBLIC_RESOURCE, true);
 export class AuthGuard implements CanActivate {
   constructor(
     private readonly jwtService: JwtService,
+    private readonly config: ConfigService,
     private readonly reflector: Reflector,
   ) {}
 
@@ -41,9 +42,7 @@ export class AuthGuard implements CanActivate {
 
     try {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const payload = await this.jwtService.verifyAsync(token, {
-        secret: jwtConstants.secret,
-      });
+      const payload = await this.jwtService.verifyAsync(token);
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       request['user'] = payload;

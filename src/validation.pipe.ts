@@ -4,7 +4,11 @@ import {
   PipeTransform,
 } from '@nestjs/common';
 import { ZodType } from 'zod';
-import { SignInSchema, SignUpSchema } from './auth/auth.validation';
+import {
+  RefreshSchema,
+  SignInSchema,
+  SignUpSchema,
+} from './auth/auth.validation';
 import { ClassConstructor, plainToInstance } from 'class-transformer';
 
 type ZodSchemas = Record<string, ZodType>;
@@ -39,6 +43,7 @@ export class ZodValidationPipe implements PipeTransform {
 const schemas: ZodSchemas = {
   SignInDto: SignInSchema,
   SignUpDto: SignUpSchema,
+  RefreshDto: RefreshSchema,
 };
 
 const pipe = new ZodValidationPipe(schemas);

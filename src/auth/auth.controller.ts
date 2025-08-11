@@ -1,5 +1,5 @@
 import { AuthGuard, Public } from './auth.guard';
-import { SignInDto, SignUpDto } from './auth.validation';
+import { SignInDto, SignUpDto, RefreshDto } from './auth.validation';
 import { AuthService } from './auth.service';
 import {
   Body,
@@ -16,15 +16,25 @@ export class AuthController {
 
   @Public()
   @Post('sign-up')
-  async signUp(@Body() signUpDto: SignUpDto) {
+  async signUp(@Body() signUpDto: SignUpDto): Promise<object> {
     return await this.authService.signUp(signUpDto);
   }
 
   @HttpCode(HttpStatus.OK)
   @Public()
   @Post('sign-in')
-  async signIn(@Body() signInDto: SignInDto): Promise<any> {
+  async signIn(@Body() signInDto: SignInDto): Promise<object> {
     return await this.authService.signIn(signInDto.email, signInDto.password);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Public()
+  @Post('refresh')
+  async refresh(@Body() refreshDto: RefreshDto): Promise<object> {
+    return await this.authService.refresh(
+      refreshDto.email,
+      refreshDto.refreshToken,
+    );
   }
 
   @HttpCode(HttpStatus.OK)
