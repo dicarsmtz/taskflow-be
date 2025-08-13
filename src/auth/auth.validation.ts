@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import * as z from 'zod';
 
@@ -20,8 +21,10 @@ export const SignUpSchema = z.object({
 });
 
 export class SignUpDto {
+  @ApiProperty({ name: 'first_name' })
   @Expose({ name: 'first_name' })
   firstName!: string;
+  @ApiProperty({ name: 'last_name' })
   @Expose({ name: 'last_name' })
   lastName!: string;
   slug!: string;
@@ -36,6 +39,7 @@ export const RefreshSchema = z.object({
 
 export class RefreshDto {
   email!: string;
+  @ApiProperty({ name: 'refresh_token' })
   @Expose({ name: 'refresh_token' })
   refreshToken!: string;
 }

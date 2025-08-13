@@ -9,6 +9,7 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
@@ -29,6 +30,7 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Public()
+  @ApiBearerAuth()
   @Post('refresh')
   async refresh(@Body() refreshDto: RefreshDto): Promise<object> {
     return await this.authService.refresh(
@@ -39,6 +41,7 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard)
+  @ApiBearerAuth()
   @Post('sign-out')
   signOut() {
     return 'logout';
